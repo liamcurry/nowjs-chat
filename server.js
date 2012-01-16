@@ -1,11 +1,13 @@
 (function() {
-  var app, everyone, express, fs, path, port, routes;
+  var app, everyone, express, fs, nowjs, path, routes;
 
   fs = require('fs');
 
   path = require('path');
 
   express = require('express');
+
+  nowjs = require('now');
 
   routes = require('./routes');
 
@@ -33,10 +35,14 @@
 
   app.get('/', routes.index);
 
-  everyone = require('now').initialize(app);
+  everyone = nowjs.initialize(app);
+
+  everyone.now.enterRoom = function(name) {
+    return everyone.now.receiveMessage(name, '', 'joined');
+  };
 
   everyone.now.distributeMessage = function(message) {
-    return everyone.now.receiveMessage(this.now.name, message);
+    return everyone.now.receiveMessage(this.now.name, message, 'msg');
   };
 
   everyone.now.fetchTemplate = function(template) {
@@ -50,9 +56,13 @@
     });
   };
 
-  port = process.env.PORT || 3000;
+  nowjs.on('disconnect', function() {
+    return nowjs.getClient(this.user.clientId, function() {
+      return everyone.now.receiveMessage(this.now.name, '', 'left');
+    });
+  });
 
-  app.listen(port, function() {
+  app.listen(3000, function() {
     return console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
   });
 

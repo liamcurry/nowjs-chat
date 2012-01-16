@@ -1,17 +1,31 @@
 (function() {
+  var $messages;
+
+  $messages = $('#messages');
 
   $(function() {
-    now.receiveMessage = function(name, message) {
-      return $('#messages').append("<li>" + name + ": " + message + "</li>");
+    now.receiveMessage = function(name, message, type) {
+      switch (type) {
+        case 'joined':
+          return $messages.append("<li class='message-joined'>" + name + " joined the room</li>");
+        case 'left':
+          return $messages.append("<li class='message-left'>" + name + " left the room</li>");
+        default:
+          return $messages.append("<li class='message-msg'>" + name + ": " + message + "</li>");
+      }
     };
-    $('#send-button').click(function() {
+    $('#enter-room').submit(function(e) {
+      e.preventDefault();
+      now.name = $('#name').val();
+      now.enterRoom(now.name);
+      $(this).hide();
+      return $('#chat-room').show();
+    });
+    $('#send-message').submit(function(e) {
+      e.preventDefault();
       return now.distributeMessage($('#text-input').val());
     });
-    $('#text-input').val('');
-    now.name = prompt('What is your name?');
-    return now.receiveTemplate = function(template) {
-      return console.log(template);
-    };
+    return now.receiveTemplate = function(template) {};
   });
 
 }).call(this);

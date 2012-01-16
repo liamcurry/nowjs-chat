@@ -1,6 +1,15 @@
-ul#messages
-input#text-input(type='text')
-button#send-button 'Send message'
+form#enter-room(action='.', method='post')
+  label(for='name') What's your name?
+  input#name(type='text', placeholder='John, Joe, Susan, Sally...')
+  button(type='submit') Enter
+
+#chat-room(style='display:none')
+  ul#messages
+
+  form#send-message(action='.', method='post')
+    input#text-input(type='text', placeholder='Enter your message here')
+    button(type='submit') Send message
+
 script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
 script(src='/js/chat.js')
 script(src='/nowjs/now.js')

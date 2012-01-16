@@ -1,6 +1,7 @@
 fs = require 'fs'
 path = require 'path'
 express = require 'express'
+nowjs = require 'now'
 
 routes = require './routes'
 
@@ -24,14 +25,21 @@ app.configure 'production', ->
 
 app.get '/', routes.index
 
-everyone = require('now').initialize app
+everyone = nowjs.initialize app
+
+everyone.now.enterRoom = (name) ->
+  everyone.now.receiveMessage name, '', 'joined'
 
 everyone.now.distributeMessage = (message) ->
-  everyone.now.receiveMessage @now.name, message
+  everyone.now.receiveMessage @now.name, message, 'msg'
 
 everyone.now.fetchTemplate = (template) ->
   fs.readFile path.join(app.settings.views, path.normalize(template)), (err, data) =>
     if err then throw err else @now.receiveTemplate data.toString 'ascii'
+
+nowjs.on 'disconnect', ->
+  nowjs.getClient @user.clientId, ->
+    everyone.now.receiveMessage @now.name, '', 'left'
 
 app.listen 3000, ->
   console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
