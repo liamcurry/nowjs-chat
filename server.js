@@ -20,13 +20,13 @@
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
-    return app.use('/', express.errorHandler({
+    return app.use(express.errorHandler({
       dumpExceptions: true,
       showStack: true
     }));
   });
 
-  'app.configure \'development\', ->\n  app.use express.errorHandler\n    dumpExceptions: true\n    showStack: true\n\napp.configure \'production\', ->\n  app.use express.errorHandler\n    dumpExceptions: true\n    showStack: true';
+  'app.configure \'development\', ->\n  app.use express.errorHandler\n    dumpExceptions: true\n    showStack: true\n\napp.configure \'production\', ->\n  app.use express.errorHandler()';
 
   app.get('/', routes.index);
 
@@ -57,8 +57,10 @@
     });
   });
 
-  app.listen(3000, function() {
-    return console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+  app.listen(process.env.PORT || 3000, function() {
+    console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+    console.log(process.version);
+    return console.log("AWWW YEAHHHHHH");
   });
 
 }).call(this);
