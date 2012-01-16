@@ -33,8 +33,5 @@ everyone.now.fetchTemplate = (template) ->
   fs.readFile path.join(app.settings.views, path.normalize(template)), (err, data) =>
     if err then throw err else @now.receiveTemplate data.toString 'ascii'
 
-
-port = process.env.PORT or 3000
-
-app.listen port, ->
+app.listen 3000, ->
   console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env

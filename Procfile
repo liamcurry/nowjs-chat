@@ -1,4 +1,4 @@
 coffee: coffee --watch --output . --compile src
 compass: compass watch public/sass/
-web: nodemon app.js
-mongod: sudo mongod
+mongo: sudo mongod
+web: nodemon server.js
