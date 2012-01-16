@@ -14,7 +14,11 @@ app.configure ->
   app.use express.methodOverride()
   app.use app.router
   app.use express.static path.join __dirname, 'public'
+  app.use '/', express.errorHandler
+    dumpExceptions: true
+    showStack: true
 
+'''
 app.configure 'development', ->
   app.use express.errorHandler
     dumpExceptions: true
@@ -24,6 +28,7 @@ app.configure 'production', ->
   app.use express.errorHandler
     dumpExceptions: true
     showStack: true
+'''
 
 app.get '/', routes.index
 

@@ -19,19 +19,14 @@
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
-    return app.use(express.static(path.join(__dirname, 'public')));
-  });
-
-  app.configure('development', function() {
-    return app.use(express.errorHandler({
+    app.use(express.static(path.join(__dirname, 'public')));
+    return app.use('/', express.errorHandler({
       dumpExceptions: true,
       showStack: true
     }));
   });
 
-  app.configure('production', function() {
-    return app.use(express.errorHandler());
-  });
+  'app.configure \'development\', ->\n  app.use express.errorHandler\n    dumpExceptions: true\n    showStack: true\n\napp.configure \'production\', ->\n  app.use express.errorHandler\n    dumpExceptions: true\n    showStack: true';
 
   app.get('/', routes.index);
 
