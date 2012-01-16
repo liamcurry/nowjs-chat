@@ -21,7 +21,9 @@ app.configure 'development', ->
     showStack: true
 
 app.configure 'production', ->
-  app.use express.errorHandler()
+  app.use express.errorHandler
+    dumpExceptions: true
+    showStack: true
 
 app.get '/', routes.index
 
