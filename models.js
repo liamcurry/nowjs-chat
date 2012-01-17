@@ -1,19 +1,14 @@
-(function() {
-  var MessageSchema, mongoose;
+var mongoose = require('mongoose');
 
-  mongoose = require('mongoose');
-
-  MessageSchema = new mongoose.Schema({
-    name: String,
-    timestamp: {
-      type: Date,
-      "default": Date.now
-    },
-    type: {
-      type: String,
-      "enum": ['msg', 'joined', 'left']
-    },
-    content: String
-  });
-
-}).call(this);
+var MessageSchema = new mongoose.Schema({
+  name: String,
+  timestamp: {
+    type: Date,
+    default: Date.now
+  },
+  type: {
+    type: String,
+    enum: ['msg', 'joined', 'left']
+  },
+  content: String
+});
