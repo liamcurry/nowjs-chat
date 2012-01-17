@@ -1,28 +1,35 @@
-var $messages;
+o = $;
 
-$messages = $('#messages');
+var messages = o('#messages')
+  , messageInput = o('#text-input')
+  , messageTemplate = doT.template(o('#message-template').text());
 
-$(function() {
-  now.receiveMessage = function(name, message, type) {
-    switch (type) {
-      case 'joined':
-        $messages.append("<li class='message-joined'>" + name + " joined the room</li>");
-      case 'left':
-        $messages.append("<li class='message-left'>" + name + " left the room</li>");
-      default:
-        $messages.append("<li class='message-msg'>" + name + ": " + message + "</li>");
-    }
+window.template = messageTemplate;
+o(function() {
+  now.receiveMessage = function(timestamp, name, content, type) {
+    if (type == 'left')
+      content = 'left the room';
+    else if (type == 'joined')
+      content = 'joined the room';
+    messages.append(messageTemplate({
+        timestamp: timestamp
+      , name: name
+      , content: content
+      , type: type
+    }));
   };
-  $('#enter-room').submit(function(e) {
+
+  o('#enter-room').submit(function(e) {
     e.preventDefault();
-    now.name = $('#name').val();
+    now.name = o('#name').val();
     now.enterRoom(now.name);
-    $(this).hide();
-    return $('#chat-room').show();
+    o(this).hide();
+    o('#chat-room').show();
   });
-  $('#send-message').submit(function(e) {
+
+  o('#send-message').submit(function(e) {
     e.preventDefault();
-    return now.distributeMessage($('#text-input').val());
+    now.distributeMessage(o('#text-input').val());
   });
-  return now.receiveTemplate = function(template) {};
+
 });

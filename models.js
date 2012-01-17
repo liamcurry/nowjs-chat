@@ -1,14 +1,14 @@
-var mongoose = require('mongoose');
+var db = app.db;
 
-var MessageSchema = new mongoose.Schema({
-  name: String,
-  timestamp: {
-    type: Date,
-    default: Date.now
-  },
-  type: {
-    type: String,
-    enum: ['msg', 'joined', 'left']
-  },
-  content: String
-});
+db.model('Message', new db.Schema({
+    name: String
+  , timestamp: {
+      type: Date
+    , default: Date.now
+  }
+  , type: {
+      type: String
+    , enum: ['msg', 'joined', 'left']
+  }
+  , content: String
+}));

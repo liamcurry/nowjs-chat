@@ -1,15 +1,38 @@
-form#enter-room(action='.', method='post')
-  label(for='name') What's your name?
-  input#name(type='text', placeholder='John, Joe, Susan, Sally...')
-  button(type='submit') Enter
+extends layout
 
-#chat-room(style='display:none')
-  ul#messages
+block title
+  | Welcome to the chat room
 
-  form#send-message(action='.', method='post')
-    input#text-input(type='text', placeholder='Enter your message here')
-    button(type='submit') Send message
+block content
+  form#enter-room(action='.', method='post')
+    label(for='name') What's your name?
+    input#name(type='text', placeholder='John, Joe, Susan, Sally...')
+    button(type='submit') Enter
 
-script(src='/nowjs/now.js')
-script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
-script(src='/javascripts/chat.js')
+  #chat-room(style='display:none')
+    ul#messages
+      for message in messages
+        li(class='message message-' + message.type)
+          span.message-timestamp= message.timestamp
+          span.message-name= message.name
+          span.message-content
+            if message.type == 'left'
+              | left the room
+            else if message.type == 'joined'
+              | joined the room
+            else
+              = message.content
+
+    form#send-message(action='.', method='post')
+      input#text-input(type='text', placeholder='Enter your message here')
+      button(type='submit') Send message
+
+append javascripts
+  script(type='text/x-dot-template', id='message-template')
+    li(class='message message-{{=it.type}}')
+      span.message-timestamp {{=it.timestamp}}
+      span.message-name {{=it.name}}
+      span.message-content {{=it.content}}
+
+  script(src='/javascripts/vendor/doT.js')
+  script(src='/javascripts/chat.js')

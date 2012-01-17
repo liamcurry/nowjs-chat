@@ -1,11 +1,14 @@
 var express = require('express')
-  , stylus = require('stylus');
+  , stylus = require('stylus')
+  , mongoose = require('mongoose');
 
 app = express.createServer();
 
 app.configure(function() {
+  app.db = mongoose.connect('mongodb://lcurry:captainhowdy@staff.mongohq.com:10080/nowjs-chat');
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
+  app.set('view options', { layout: false });
   app.set('root', __dirname);
   app.use(express.favicon());
   app.use(express.logger('dev'));
@@ -15,9 +18,13 @@ app.configure(function() {
 });
 
 app.configure('development', function() {
-  app.use(express.errorHandler());
+  app.use(express.errorHandler({
+    dumpExceptions: true,
+    showStack: true
+  }));
 });
 
+require('./models');
 require('./routes');
 
 app.listen(process.env.PORT || 3000, function () {
