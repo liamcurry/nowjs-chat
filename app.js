@@ -1,11 +1,16 @@
 var express = require('express')
   , stylus = require('stylus')
-  , mongoose = require('mongoose');
+  , mongoose = require('mongoose')
+  , env = process.env.NODE_ENV || 'development';
 
 app = express.createServer();
 
+app.configure(env, require('./conf/' + env));
+
+console.log(app.set('mongo-uri'));
+
 app.configure(function() {
-  app.db = mongoose.connect('mongodb://lcurry:captainhowdy@staff.mongohq.com:10080/nowjs-chat');
+  app.db = mongoose.connect(app.set('mongo-uri'));
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('view options', { layout: false });
@@ -15,13 +20,6 @@ app.configure(function() {
   app.use(stylus.middleware({ src: __dirname + '/public' }));
   app.use(express.static(__dirname + '/public'));
   app.use(app.router);
-});
-
-app.configure('development', function() {
-  app.use(express.errorHandler({
-    dumpExceptions: true,
-    showStack: true
-  }));
 });
 
 require('./models');
