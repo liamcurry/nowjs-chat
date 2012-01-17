@@ -2,7 +2,7 @@ var $messages;
 
 $messages = $('#messages');
 
-now.ready(function() {
+$(function() {
   now.receiveMessage = function(name, message, type) {
     switch (type) {
       case 'joined':
