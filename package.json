@@ -3,7 +3,7 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "express": "latest"
+      "express": "*"
     , "jade": "*"
     , "stylus": "0.22.x"
     , "socket.io": "0.8.7"
