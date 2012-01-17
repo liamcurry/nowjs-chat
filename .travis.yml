@@ -1,7 +1,7 @@
 language: node_js
 
 before_script:
-  - mongo nowjs-chat --evail 'db.addUser("lcurry", "test");'
+  - mongo nowjs-chat --eval 'db.addUser("lcurry", "test");'
 
 node_js:
   - 0.4

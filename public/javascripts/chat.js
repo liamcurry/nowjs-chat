@@ -3,7 +3,8 @@ o = $;
 var socket = io.connect()
   , messages = o('#messages')
   , messageInput = o('#text-input')
-  , messageTemplate = doT.template(o('#message-template').text());
+  , messageTemplate = doT.template(o('#message-template').text())
+  , textInput = o('#text-input');
 
 o(function() {
 
@@ -24,7 +25,8 @@ o(function() {
 
   o('#send-message').submit(function(e) {
     e.preventDefault();
-    socket.emit('send message', o('#text-input').val());
+    socket.emit('send message', textInput.val());
+    textInput.val('');
   });
 
 });
