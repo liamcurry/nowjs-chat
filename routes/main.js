@@ -1,9 +1,9 @@
 var path = require('path')
   , fs = require('fs')
-  , path = require('path')
-  , io = require('socket.io').listen(app);
+  , path = require('path');
 
 var db = app.db
+  , io = app.io
   , Message = db.model('Message');
 
 app.get('/', function(req, res, next) {

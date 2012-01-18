@@ -7,10 +7,9 @@ app = express.createServer();
 
 app.configure(env, require('./conf/' + env));
 
-console.log(app.set('mongo-uri'));
-
 app.configure(function() {
   app.db = mongoose.connect(app.set('mongo-uri'));
+  app.io = require('socket.io').listen(app);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('view options', { layout: false });
@@ -25,6 +24,8 @@ app.configure(function() {
 require('./models');
 require('./routes');
 
-app.listen(process.env.PORT || 3000, function () {
-  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-});
+if (env != 'test') {
+  app.listen(process.env.PORT || 3000, function () {
+    console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+  });
+}
