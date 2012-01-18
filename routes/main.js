@@ -15,39 +15,29 @@ app.get('/', function(req, res, next) {
 io.sockets.on('connection', function(socket) {
 
   socket.on('set name', function(name) {
-    var instance = new Message();
+    var message = { timestamp: Date.now(), name: name, content: '', type: 'joined' }
+      , instance = new Message(message);
     socket.set('name', name);
-    io.sockets.emit('new message', {
-      timestamp: Date.now(), name: name, content: '', type: 'joined'
-    });
-    instance.name = name;
-    instance.type = 'joined';
-    instance.content = '';
+    io.sockets.emit('new message', message);
     instance.save();
   });
 
-  socket.on('send message', function(message) {
-    var instance = new Message();
+  socket.on('send message', function(content) {
+
     socket.get('name', function(err, name) {
-      io.sockets.emit('new message', {
-        timestamp: Date.now(), name: name, content: message, type: 'msg'
-      });
-      instance.name = name;
-      instance.type = 'msg';
-      instance.content = message;
+      var message = { timestamp: Date.now(), name: name, content: content, type: 'msg' }
+        , instance = new Message(message);
+      io.sockets.emit('new message', message);
       instance.save();
     });
+
   });
 
   socket.on('disconnect', function() {
     socket.get('name', function(err, name) {
-      var instance = new Message();
-      io.sockets.emit('new message', {
-        timestamp: Date.now(), name: name, content: '', type: 'left'
-      });
-      instance.name = name;
-      instance.type = 'left';
-      instance.content = '';
+      var message = { timestamp: Date.now(), name: name, content: '', type: 'left' }
+        , instance = new Message(message);
+      io.sockets.emit('new message', message);
       instance.save();
     });
   });

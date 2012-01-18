@@ -1,16 +1,25 @@
 {
-    "name": "application-name"
-  , "version": "0.0.1"
+    "name": "nowjs-chat"
+  , "description": "A simple app for learning Node.js"
+  , "author": "Liam Curry <liam@curry.name>"
+  , "keywords": ["chat", "socket.io", "learning"]
+  , "version": "0.0.2"
+  , "main": "app"
   , "private": true
   , "dependencies": {
       "express": "*"
     , "jade": "*"
     , "stylus": "*"
-    , "socket.io": "0.8.7"
-    , "mongoose": "2.4.10"
+    , "socket.io": ">= 0.8.7"
+    , "mongoose": ">= 2.4.10"
+  }
+  , "devDependencies": {
+      "mocha": "*"
+    , "should": "*"
   }
   , "scripts": {
       "start": "node app.js"
+    , "test": "make test"
   }
   , "config": {
       "version": "v0.6.7"

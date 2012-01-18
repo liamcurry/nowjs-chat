@@ -9,12 +9,16 @@ block content
     input#name(type='text', placeholder='John, Joe, Susan, Sally...')
     button(type='submit') Enter
 
-  #chat-room(style='display:none')
+  #chat-room(hidden)
     ul#messages
       for message in messages
         li(class='message message-' + message.type)
           span.message-timestamp= message.timestamp
-          span.message-name= message.name
+          span.message-name
+            if message.name
+              = message.name
+            else
+              | anon
           span.message-content
             if message.type == 'left'
               | left the room
@@ -29,11 +33,14 @@ block content
 
 append javascripts
   script(type='text/x-dot-template', id='message-template')
-    li(class='message message-{{=it.type}}')
-      span.message-timestamp {{=it.timestamp}}
-      span.message-name {{=it.name}}
-      span.message-content {{=it.content}}
+    span.message-timestamp {{=it.timestamp}}
+    span.message-name {{=it.name}}
+    span.message-content {{=it.content}}
 
   script(src='/socket.io/socket.io.js')
   script(src='/javascripts/vendor/doT.js')
-  script(src='/javascripts/chat.js')
+  script(src='/javascripts/vendor/underscore.js')
+  script(src='/javascripts/vendor/backbone.js')
+
+  script(src='/javascripts/index.js')
+  script(src='/javascripts/modules/chat.js')
