@@ -2,7 +2,11 @@
     "name": "nowjs-chat"
   , "description": "A simple app for learning Node.js"
   , "author": "Liam Curry <liam@curry.name>"
-  , "keywords": ["chat", "socket.io", "learning"]
+  , "keywords": [
+      "chat"
+    , "socket.io"
+    , "learning"
+  ]
   , "version": "0.0.2"
   , "main": "app"
   , "private": true
@@ -12,11 +16,12 @@
     , "stylus": "*"
     , "socket.io": ">= 0.8.7"
     , "mongoose": ">= 2.4.10"
+    , "passport": "*"
+    , "passport-local": "*"
   }
   , "devDependencies": {
       "mocha": "*"
     , "should": "*"
-    , "jslint": "*"
   }
   , "scripts": {
       "start": "node app.js"

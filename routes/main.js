@@ -4,41 +4,95 @@ var path = require('path')
 
 var db = app.db
   , io = app.io
-  , Message = db.model('Message');
+  , Room = db.model('Room');
+
+function loginRequired(req, res, next) {
+	if (req.isAuthenticated()) return next();
+	res.redirect('/login/');
+}
 
 app.get('/', function(req, res, next) {
-  Message.find({}, function(err, messages) {
-    res.render('index', { messages: messages });
+  console.log(req.user);
+  Room.find({}, function(err, rooms) {
+    if (err) throw err;
+    res.render('index', { rooms: rooms });
+  });
+});
+
+app.post('/rooms/create/', loginRequired, function(req, res, next) {
+  var room = new Room({
+      name: req.param('name')
+    , ownerId: req.user._id
+  });  
+
+  room.save(function(err) {
+    if (err) {
+      res.render('roomCreate', { errors: err });
+    } else {
+      res.redirect('/rooms/' + room._id + '/');
+    }
+  });
+
+});
+
+app.get('/rooms/:roomId/', loginRequired, function(req, res, next) {
+  Room.findById(req.params.roomId, function(err, room) {
+    res.render('roomDetail', { room: room });
   });
 });
 
 io.sockets.on('connection', function(socket) {
 
-  socket.on('set name', function(name) {
-    var message = { timestamp: Date.now(), name: name, content: '', type: 'joined' }
-      , instance = new Message(message);
-    socket.set('name', name);
-    io.sockets.emit('new message', message);
-    instance.save();
+  socket.on('enter room', function(info) {
+    socket.join(info.roomId);
+    socket.set('info', info);
+    Room.findById(info.roomId, function(err2, room) {
+      var message = {
+            timestamp: Date.now()
+          , name: info.name
+          , userId: info.userId
+          , content: ''
+          , type: 'joined'
+        };
+      console.log(message);
+      room.messages.push(message);
+      io.sockets.in(info.roomId).emit('new message', message);
+      room.save()
+    });
   });
 
   socket.on('send message', function(content) {
-
-    socket.get('name', function(err, name) {
-      var message = { timestamp: Date.now(), name: name, content: content, type: 'msg' }
-        , instance = new Message(message);
-      io.sockets.emit('new message', message);
-      instance.save();
+    socket.get('info', function(err1, info) {
+      Room.findById(info.roomId, function(err2, room) {
+        var message = {
+            timestamp: Date.now()
+          , name: info.name
+          , userId: info.userId
+          , content: content
+          , type: 'msg'
+        };
+        room.messages.push(message);
+        io.sockets.in(info.roomId).emit('new message', message);
+        room.save();
+      });
     });
-
   });
 
   socket.on('disconnect', function() {
-    socket.get('name', function(err, name) {
-      var message = { timestamp: Date.now(), name: name, content: '', type: 'left' }
-        , instance = new Message(message);
-      io.sockets.emit('new message', message);
-      instance.save();
+    socket.get('info', function(err1, info) {
+      if (info == null) return;
+      Room.findById(info.roomId, function(err2, room) {
+        var message = {
+            timestamp: Date.now()
+          , name: info.name
+          , userId: info.userId
+          , content: ''
+          , type: 'left'
+        };
+        room.messages.push(message);
+        io.sockets.in(info.roomId).emit('new message', message);
+        room.save();
+      });
     });
   });
 

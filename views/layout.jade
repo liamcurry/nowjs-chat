@@ -32,8 +32,21 @@ html.no-js
       meta(http-equiv='imagetoolbar', content='no')
       meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 
-  body
-    block content
+  body(data-user-id=(user ? user._id : ''), data-name=(user ? user.nickname : ''))
+    block body
+      #header
+        h1 Chat
+        p#nav
+          if user
+            span Logged in as #{user.email} |
+            a(href='/logout/') Logout
+          else
+            a(href='/login/') Login
+            a(href='/signup/') Register
+      #content
+        block content
+
+
 
     block javascripts
       script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')

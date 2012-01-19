@@ -1,46 +1,15 @@
 extends layout
 
 block title
-  | Welcome to the chat room
+  | Welcome to the chat room app
 
 block content
-  form#enter-room(action='.', method='post')
-    label(for='name') What's your name?
-    input#name(type='text', placeholder='John, Joe, Susan, Sally...')
-    button(type='submit') Enter
-
-  #chat-room(hidden)
-    ul#messages
-      for message in messages
-        li(class='message message-' + message.type)
-          span.message-timestamp= message.timestamp
-          span.message-name
-            if message.name
-              = message.name
-            else
-              | anon
-          span.message-content
-            if message.type == 'left'
-              | left the room
-            else if message.type == 'joined'
-              | joined the room
-            else
-              = message.content
-
-    form#send-message(action='.', method='post')
-      input#text-input(type='text', placeholder='Enter your message here')
-      button(type='submit') Send message
-
-append javascripts
-  script(type='text/x-dot-template', id='message-template')
-    span.message-timestamp {{=it.timestamp}}
-    span.message-name {{=it.name}}
-    span.message-content {{=it.content}}
-
-  script(src='/socket.io/socket.io.js')
-  script(src='/javascripts/vendor/doT.js')
-  script(src='/javascripts/vendor/underscore.js')
-  script(src='/javascripts/vendor/backbone.js')
-
-  script(src='/javascripts/index.js')
-  script(src='/javascripts/modules/chat.js')
+  h2 Rooms
+  ul
+    for room in rooms
+      li
+        a(href='/rooms/' + room._id + '/')= room.name || room._id
+  h2 Create your own
+  form(action='/rooms/create/', method='post')
+    input(type='text', name='name', placeholder='Name of the room...')
+    button(type='submit') Create

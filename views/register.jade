@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h2 Register
+  if errors
+    p= errors
+  form(action='.', method='POST')
+    #login
+      label(for='email') Email
+      input(type='email', name='email', required)
+    #password
+      label(for='password') Password
+      input(type='password', name='password', required)
+    #nickname
+      label(for='nickname') Nickname
+      input#nickname(type='text', name='nickname', required)
+    #submit
+      button(type='submit') Register

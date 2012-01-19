@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  if user == false
+    p Invalid email or password
+  else
+    = user
+  form(action='.', method='post')
+    #login
+      label(for='email') Email
+      input#email(type='email', name='email', required)
+    #password
+      label(for='password') Password
+      input#password(type='password', name='password', required)
+    #submit
+      button(type='submit') Login

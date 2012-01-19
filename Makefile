@@ -6,5 +6,4 @@ test:
 deploy:
 	@echo 'Implement this yourself!'
 
-
 .PHONY: test

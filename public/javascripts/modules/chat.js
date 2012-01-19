@@ -34,17 +34,19 @@
     }
     , initialize: function() {
         this.textInput = this.$('#text-input');
+        this.data = o(this.el).data()
     }
     , sendMessage: function(e) {
         e.preventDefault();
         socket.emit('send message', this.textInput.val());
         this.textInput.val('');
     }
-    , enterRoom: function(e) {
-        e.preventDefault();
-        socket.emit('set name', this.$('#name').val());
-        this.$('#enter-room').hide()
-        this.$('#chat-room').show()
+    , enterRoom: function() {
+        socket.emit('enter room', {
+            name: this.data.name
+          , userId: this.data.userId
+          , roomId: this.$('#chat-room').data('roomId')
+        });
     }
     , addMessage: function(message) {
         var view = new Chat.Views.MessageView({ model: message });

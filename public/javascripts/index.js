@@ -22,6 +22,8 @@ o(function() {
 
   app.chatView = new Chat.Views.AppView();
 
+  app.chatView.enterRoom();
+
   socket.on('new message', function(message) {
     app.chatView.addMessage(new Chat.Models.Message(message));
   });
