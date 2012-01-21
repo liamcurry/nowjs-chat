@@ -11,6 +11,8 @@
 * Store room info in session
 * Add fallback when the socket lost info (give user a nice error)
 * Refreshes shouldn't make the user leave right away
+* Show nicer form errors
+* Refill form fields after posting a form with errors
 
 # DONE
 

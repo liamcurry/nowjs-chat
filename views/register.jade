@@ -5,6 +5,7 @@ block content
   if errors
     p= errors
   form(action='.', method='POST')
+    input#csrf(name='_csrf', value=csrf, type='hidden')
     #login
       label(for='email') Email
       input(type='email', name='email', required)
