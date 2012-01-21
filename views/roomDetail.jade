@@ -7,20 +7,18 @@ block content
   #chat-room(data-room-id=room._id)
     ul#messages
       for message in room.messages
-        li(class='message message-' + message.type)
+        li(class='message message-' + message.type + ('' +
+        message.userId == '' + user._id ? ' message-mine' : ' message-others'), data-user-id=message.userId)
           span.message-timestamp= message.timestamp
           span.message-name
-            if message.name
-              = message.name
-            else
-              | anon
+            = message.nickname
           span.message-content
             if message.type == 'left'
               | left the room
             else if message.type == 'joined'
               | joined the room
             else
-              = message.content
+              | !{marked(message.content)}
 
     form#send-message(action='.', method='post')
       input#text-input(type='text', placeholder='Enter your message here')
@@ -29,7 +27,7 @@ block content
 append javascripts
   script(type='text/x-dot-template', id='message-template')
     span.message-timestamp {{=it.timestamp}}
-    span.message-name {{=it.name}}
+    span.message-name {{=it.nickname}}
     span.message-content {{=it.content}}
 
   script(src='/socket.io/socket.io.js')

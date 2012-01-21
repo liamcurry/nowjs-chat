@@ -6,6 +6,7 @@ block content
   else
     = user
   form(action='.', method='post')
+    input(type='hidden', name='_csrf', value=csrf)
     #login
       label(for='email') Email
       input#email(type='email', name='email', required)

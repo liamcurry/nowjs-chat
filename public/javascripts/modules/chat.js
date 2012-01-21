@@ -1,10 +1,7 @@
 (function(Chat) {
 
   Chat.Models.Message = Backbone.Model.extend({
-      defaults: {
-        name: 'anon'
-    }
-    , initialize: function() {
+      initialize: function() {
         var type = this.get('type')
           , content = this.get('content');
         if (type == 'left')
@@ -19,10 +16,12 @@
       el: 'li'
     , template: doT.template(o('#message-template').text())
     , render: function() {
-        o(this.el)
-          .prop('class', 'message message-' + this.model.get('type'))
+        var cls = 'message message-' + this.model.get('type');
+        if ('' + this.model.get('userId') == '' + auxal.app.user.userId)
+          cls += ' message-mine';
+        return o('<li></li>')
+          .prop('class', cls)
           .html(this.template(this.model.toJSON()));
-        return this;
     }
   });
 
@@ -34,7 +33,6 @@
     }
     , initialize: function() {
         this.textInput = this.$('#text-input');
-        this.data = o(this.el).data()
     }
     , sendMessage: function(e) {
         e.preventDefault();
@@ -43,14 +41,14 @@
     }
     , enterRoom: function() {
         socket.emit('enter room', {
-            name: this.data.name
-          , userId: this.data.userId
+            nickname: auxal.app.user.nickname
+          , userId: auxal.app.user.userId
           , roomId: this.$('#chat-room').data('roomId')
         });
     }
     , addMessage: function(message) {
         var view = new Chat.Views.MessageView({ model: message });
-        this.$('#messages').append(view.render().el);
+        o('#messages').append(view.render());
         window.scrollTo(0, document.body.scrollHeight);
     }
   });

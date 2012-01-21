@@ -1,6 +1,7 @@
 var path = require('path')
   , fs = require('fs')
-  , path = require('path');
+  , path = require('path')
+  , marked = require('marked');
 
 var db = app.db
   , io = app.io
@@ -12,7 +13,6 @@ function loginRequired(req, res, next) {
 }
 
 app.get('/', function(req, res, next) {
-  console.log(req.user);
   Room.find({}, function(err, rooms) {
     if (err) throw err;
     res.render('index', { rooms: rooms });
@@ -49,12 +49,11 @@ io.sockets.on('connection', function(socket) {
     Room.findById(info.roomId, function(err2, room) {
       var message = {
             timestamp: Date.now()
-          , name: info.name
+          , nickname: info.nickname
           , userId: info.userId
           , content: ''
           , type: 'joined'
         };
-      console.log(message);
       room.messages.push(message);
       io.sockets.in(info.roomId).emit('new message', message);
       room.save()
@@ -66,12 +65,13 @@ io.sockets.on('connection', function(socket) {
       Room.findById(info.roomId, function(err2, room) {
         var message = {
             timestamp: Date.now()
-          , name: info.name
+          , nickname: info.nickname
           , userId: info.userId
           , content: content
           , type: 'msg'
         };
         room.messages.push(message);
+        message.content = marked(message.content);
         io.sockets.in(info.roomId).emit('new message', message);
         room.save();
       });
@@ -84,7 +84,7 @@ io.sockets.on('connection', function(socket) {
       Room.findById(info.roomId, function(err2, room) {
         var message = {
             timestamp: Date.now()
-          , name: info.name
+          , nickname: info.nickname
           , userId: info.userId
           , content: ''
           , type: 'left'

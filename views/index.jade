@@ -11,5 +11,6 @@ block content
         a(href='/rooms/' + room._id + '/')= room.name || room._id
   h2 Create your own
   form(action='/rooms/create/', method='post')
+    input(type='hidden', name='_csrf', value=csrf)
     input(type='text', name='name', placeholder='Name of the room...')
     button(type='submit') Create

@@ -18,7 +18,13 @@ auxal = {
 o(function() {
 
   var app = auxal.app
-    , Chat = auxal.module('chat');
+    , Chat = auxal.module('chat')
+    , bodyData = o('body').data();
+
+  auxal.app.user = {
+      nickname: bodyData.nickname
+    , userId: bodyData.userId
+  }
 
   app.chatView = new Chat.Views.AppView();
 

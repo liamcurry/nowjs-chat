@@ -3,15 +3,6 @@ var passport = require('passport')
 	,	db = app.db
   , User = db.model('User');
 
-passport.serializeUser(function(user, done) {
-	done(null, user._id);
-});
-
-passport.deserializeUser(function(id, done) {
-	User.findById(id, function(err, user) {
-		done(err, user);
-	});
-});
 
 passport.use(new LocalStrategy({
 			usernameField: 'email'
@@ -29,6 +20,16 @@ passport.use(new LocalStrategy({
 	}
 ));
 
+passport.serializeUser(function(user, done) {
+	done(null, user._id);
+});
+
+passport.deserializeUser(function(id, done) {
+	User.findById(id, function(err, user) {
+		done(err, user);
+	});
+});
+
 app.get('/signup/', function(req, res) {
 	res.render('register', { errors: {} });
 });
@@ -41,7 +42,9 @@ app.post('/signup/', function(req, res) {
 	});
 	user.save(function(err) {
 		if (err) return res.render('register', { errors: err });
-		res.redirect('/login/');
+		req.logIn(user, function(err) {
+			res.redirect('/');
+		});
 	});
 });
 
@@ -51,15 +54,13 @@ app.get('/logout/', function(req, res) {
 });
 
 app.get('/login/', function(req, res) {
-	res.render('login', { user: req.user });
+	res.render('login');
 });
 
-app.post('/login/',
-		passport.authenticate('local', { failureRedirect: '/login/?failed' })
-	,	function(req, res) {
-			res.redirect('/')
-	}
-);
+app.post('/login/', passport.authenticate('local', {
+		failureRedirect: '/login/?failed'
+	, successRedirect: '/?success'
+}));
 
 function loginRequired(req, res, next) {
 	if (req.isAuthenticated()) return next();

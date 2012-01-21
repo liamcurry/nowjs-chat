@@ -2,6 +2,7 @@ var db = app.db;
 
 var MessageSchema = new db.Schema({
 	  userId: db.Schema.ObjectId
+	, nickname: String
   , timestamp: {
       type: Date
     , default: Date.now
@@ -24,4 +25,3 @@ var RoomSchema = new db.Schema({
 }, { strict: true });
 
 db.model('Room', RoomSchema);
-db.model('Message', MessageSchema);

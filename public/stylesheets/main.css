@@ -17,6 +17,9 @@ a {
 #messages li.message-left {
   color: #666;
 }
+#messages li.message-mine {
+  color: #ff0;
+}
 #send-message {
   bottom: 0;
   left: 0;
