@@ -8,11 +8,6 @@ var db = app.db
 	, reverse = app.reverse
   , Room = db.model('Room');
 
-function loginRequired(req, res, next) {
-	if (req.isAuthenticated()) return next();
-	res.redirect(reverse('auth:signin'));
-}
-
 exports.home = function(req, res, next) {
   Room.find({}, function(err, rooms) {
     if (err) next(err);
@@ -30,6 +25,7 @@ exports.roomsCreate = function(req, res, next) {
     if (err) {
       res.render('roomCreate', { errors: err });
     } else {
+			req.flash('info', 'You successfully created a room');
       res.redirect(reverse('rooms:detail', { roomId: room._id }));
     }
   });

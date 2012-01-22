@@ -4,8 +4,6 @@
 * Administrators
 * Highlight messages with your name
 * More strict validation before saving data
-* Clean up frontend crapola
-* Investigate resourceful routes
 * Format dates in messages
 * Change title to show unread chats
 * Store room info in session

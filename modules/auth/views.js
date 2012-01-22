@@ -44,6 +44,7 @@ exports.authSignupPost = function(req, res) {
 	user.save(function(err) {
 		if (err) return res.render('register', { errors: err });
 		req.logIn(user, function(err) {
+			req.flash('info', 'Thanks for signing up!');
 			res.redirect(reverse('home'));
 		});
 	});
@@ -61,15 +62,7 @@ exports.authSignin = function(req, res) {
 exports.authSigninPost = function(req, res, next) {
 	passport.authenticate('local', function(err, user, profile) {
 		if (err) return next(err);
-		if (!user) {
-			return res.redirect(reverse('auth:signin'));
-		} else {
-			return res.redirect(reverse('home'));
-		}
+		if (!user) return res.redirect(reverse('auth:signin'));
+		return res.redirect(reverse('home'));
 	});
 };
-
-function loginRequired(req, res, next) {
-	if (req.isAuthenticated()) return next();
-	res.redirect(reverse('auth:signin'));
-}

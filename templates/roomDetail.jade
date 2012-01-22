@@ -24,16 +24,15 @@ block content
       input#text-input(type='text', placeholder='Enter your message here')
       button(type='submit') Send message
 
-append javascripts
+append js
   script(type='text/x-dot-template', id='message-template')
     span.message-timestamp {{=it.timestamp}}
     span.message-name {{=it.nickname}}
     span.message-content {{=it.content}}
 
   script(src='/socket.io/socket.io.js')
-  script(src='/javascripts/vendor/doT.js')
-  script(src='/javascripts/vendor/underscore.js')
-  script(src='/javascripts/vendor/backbone.js')
-
-  script(src='/javascripts/index.js')
-  script(src='/javascripts/modules/chat.js')
+  script(src='/js/vendor/doT.js')
+  script(src='/js/vendor/underscore.js')
+  script(src='/js/vendor/backbone.js')
+  script(src='/js/index.js')
+  script(src='/js/modules/chat.js')
