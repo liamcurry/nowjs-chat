@@ -9,6 +9,4 @@ var UserSchema = new db.Schema({
 	, password: String // Will encrypt this later
 }, { strict: true });
 
-
-
 db.model('User', UserSchema);

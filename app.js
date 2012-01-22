@@ -4,6 +4,10 @@ var express = require('express')
   , passport = require('passport')
   , RedisStore = require('connect-redis')(express)
   , marked = require('marked')
+  , winston = require('winston')
+  , fs = require('fs')
+  , join = require('path').join
+  , middleware = require('./lib/middleware')
   , env = process.env.NODE_ENV || 'development';
 
 app = express.createServer();
@@ -13,11 +17,24 @@ app.configure(env, require('./conf/' + env));
 app.configure(function() {
   app.db = mongoose.connect(app.set('mongo-uri'));
   app.io = require('socket.io').listen(app);
-  app.set('views', __dirname + '/views');
+  app.logger = new winston.Logger({
+      transports: [
+        new winston.transports.Console()
+      , new winston.transports.File({
+          filename: join('logs', 'server.log')
+      })
+    ]
+    , exceptionHandlers: [
+        new winston.transports.File({
+          filename: join('logs', 'exceptions.log')
+      })
+    ]
+  });
+  app.set('views', join(__dirname, 'templates'));
   app.set('view engine', 'jade');
   app.set('view options', { layout: false });
   app.use(express.favicon());
-  app.use(express.logger('dev'));
+  app.use(middleware.logRequests());
   app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
@@ -28,13 +45,17 @@ app.configure(function() {
   app.use(express.csrf());
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(stylus.middleware({ src: __dirname + '/public' }));
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+  app.use(stylus.middleware({ src: join(__dirname, 'public') }));
+  app.use(express.static(join(__dirname, 'public')));
 });
 
-require('./models');
-require('./routes');
+require('./lib/router');
+require('./modules/auth');
+require('./modules/chat');
+
+app.helpers({
+    reverse: app.reverse
+});
 
 app.dynamicHelpers({
     user: function(req, res) {
@@ -50,8 +71,23 @@ app.dynamicHelpers({
   }
 });
 
-if (env != 'test') {
-  app.listen(process.env.PORT || 3000, function () {
-    console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+if (!module.parent && env != 'test') {
+  var pid = process.pid.toString()
+    , pidfile = join('pids', 'server.pid');
+
+  app.listen(process.env.PORT || 3000);
+  app.logger.info('Environment: ' + app.settings.env);
+  app.logger.info('Opening server on port: ' + app.address().port);
+
+  fs.unlink(pidfile, function() {
+    fs.writeFile(pidfile, pid, function(err) {
+      if (err) throw Error('Could not make pidfile: ' + err);
+    });
   });
+
+  process.on('SIGTERM', function() {
+    app.logger.info('received SIGTERM, exiting');
+    process.exit();
+  });
+
 }

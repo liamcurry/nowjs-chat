@@ -13,6 +13,10 @@
 * Refreshes shouldn't make the user leave right away
 * Show nicer form errors
 * Refill form fields after posting a form with errors
+* Add winston logging
+* Add tests for backend and frontend
+* Limit the number of messages printed from the group
+* Remove older messages
 
 # DONE
 
@@ -23,6 +27,7 @@
 * Highlight messages you've sent
 * Add CSRF tokens
 * Figure out why children are getting deleted from messages
+* Added a simple way to reverse URLs based on name
 
 # MAAAAAYBE
 
@@ -30,3 +35,4 @@
 	- via Facebook
 	- via Github
 	- via Twitter
+* Maybe add connect-assets?

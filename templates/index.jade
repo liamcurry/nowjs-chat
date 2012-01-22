@@ -8,9 +8,9 @@ block content
   ul
     for room in rooms
       li
-        a(href='/rooms/' + room._id + '/')= room.name || room._id
+        a(href=reverse('rooms:detail', { roomId: room._id }))= room.name || room._id
   h2 Create your own
-  form(action='/rooms/create/', method='post')
+  form(action=reverse('rooms:create'), method='post')
     input(type='hidden', name='_csrf', value=csrf)
     input(type='text', name='name', placeholder='Name of the room...')
     button(type='submit') Create

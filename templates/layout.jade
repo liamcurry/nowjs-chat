@@ -39,14 +39,12 @@ html.no-js
         p#nav
           if user
             span Logged in as #{user.email} |
-            a(href='/logout/') Logout
+            a(href=reverse('auth:signout')) Signout
           else
-            a(href='/login/') Login
-            a(href='/signup/') Register
+            a(href=reverse('auth:signin')) Signin
+            a(href=reverse('auth:signup')) Signup
       #content
         block content
-
-
 
     block javascripts
       script(src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')

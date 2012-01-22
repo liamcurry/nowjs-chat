@@ -1,5 +1,6 @@
 var passport = require('passport')
 	, LocalStrategy = require('passport-local').Strategy
+	, reverse = app.reverse
 	,	db = app.db
   , User = db.model('User');
 
@@ -30,11 +31,11 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-app.get('/signup/', function(req, res) {
+exports.authSignup = function(req, res) {
 	res.render('register', { errors: {} });
-});
+};
 
-app.post('/signup/', function(req, res) {
+exports.authSignupPost = function(req, res) {
 	var user = new User({
 			email: req.body.email
 		, password: req.body.password
@@ -43,26 +44,32 @@ app.post('/signup/', function(req, res) {
 	user.save(function(err) {
 		if (err) return res.render('register', { errors: err });
 		req.logIn(user, function(err) {
-			res.redirect('/');
+			res.redirect(reverse('home'));
 		});
 	});
-});
+};
 
-app.get('/logout/', function(req, res) {
+exports.authSignout = function(req, res) {
 	req.logout();
-	res.redirect('/');
-});
+	res.redirect(reverse('home'));
+};
 
-app.get('/login/', function(req, res) {
+exports.authSignin = function(req, res) {
 	res.render('login');
-});
+};
 
-app.post('/login/', passport.authenticate('local', {
-		failureRedirect: '/login/?failed'
-	, successRedirect: '/?success'
-}));
+exports.authSigninPost = function(req, res, next) {
+	passport.authenticate('local', function(err, user, profile) {
+		if (err) return next(err);
+		if (!user) {
+			return res.redirect(reverse('auth:signin'));
+		} else {
+			return res.redirect(reverse('home'));
+		}
+	});
+};
 
 function loginRequired(req, res, next) {
 	if (req.isAuthenticated()) return next();
-	res.redirect('/login/');
+	res.redirect(reverse('auth:signin'));
 }

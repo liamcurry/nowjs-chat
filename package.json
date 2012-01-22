@@ -20,10 +20,11 @@
     , "passport-local": "*"
     , "connect-redis": "*"
     , "marked": "*"
+    , "winston": "*"
   }
   , "devDependencies": {
       "mocha": "*"
-    , "should": "*"
+    , "expect.js": "*"
   }
   , "scripts": {
       "start": "node app.js"

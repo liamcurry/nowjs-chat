@@ -5,21 +5,22 @@ var path = require('path')
 
 var db = app.db
   , io = app.io
+	, reverse = app.reverse
   , Room = db.model('Room');
 
 function loginRequired(req, res, next) {
 	if (req.isAuthenticated()) return next();
-	res.redirect('/login/');
+	res.redirect(reverse('auth:signin'));
 }
 
-app.get('/', function(req, res, next) {
+exports.home = function(req, res, next) {
   Room.find({}, function(err, rooms) {
-    if (err) throw err;
+    if (err) next(err);
     res.render('index', { rooms: rooms });
   });
-});
+};
 
-app.post('/rooms/create/', loginRequired, function(req, res, next) {
+exports.roomsCreate = function(req, res, next) {
   var room = new Room({
       name: req.param('name')
     , ownerId: req.user._id
@@ -29,17 +30,17 @@ app.post('/rooms/create/', loginRequired, function(req, res, next) {
     if (err) {
       res.render('roomCreate', { errors: err });
     } else {
-      res.redirect('/rooms/' + room._id + '/');
+      res.redirect(reverse('rooms:detail', { roomId: room._id }));
     }
   });
 
-});
+};
 
-app.get('/rooms/:roomId/', loginRequired, function(req, res, next) {
+exports.roomsDetail = function(req, res, next) {
   Room.findById(req.params.roomId, function(err, room) {
     res.render('roomDetail', { room: room });
   });
-});
+};
 
 io.sockets.on('connection', function(socket) {
 

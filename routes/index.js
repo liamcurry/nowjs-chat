@@ -1,2 +1,0 @@
-require('./auth');
-require('./main');
